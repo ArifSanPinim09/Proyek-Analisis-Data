@@ -5,26 +5,25 @@ import seaborn as sns
 import os
 
 
-file_path = "main_data.csv"  
+# Dapatkan lokasi absolut berdasarkan lokasi script
+file_path = os.path.join(os.getcwd(), "dashboard", "main_data.csv")
 
 if os.path.exists(file_path):
-    st.success(f"✅ File ditemukan: {file_path}")
+    print(f"✅ File ditemukan: {file_path}")
 else:
-    st.error("❌ File tidak ditemukan! Pastikan file sudah diunggah ke GitHub dan berada di direktori yang benar.")
+    print("❌ File tidak ditemukan!")
 
-# Jika file ditemukan, load data
-if os.path.exists(file_path):
-    df = pd.read_csv(file_path)
-    st.write(df.head())
-else:
-    st.stop()  # Hentikan Streamlit jika file tidak ditemukan
+day_df = pd.read_csv(file_path)
+
+day_df['dteday'] = pd.to_datetime(day_df['dteday'])
+
 
 
 st.sidebar.header("Filter Data")
-year_filter = st.sidebar.multiselect("Pilih Tahun:", df['yr'].unique(), format_func=lambda x: "2011" if x == 0 else "2012")
-season_filter = st.sidebar.multiselect("Pilih Musim:", df['season'].unique(), format_func=lambda x: ["Spring", "Summer", "Fall", "Winter"][x-1])
+year_filter = st.sidebar.multiselect("Pilih Tahun:", day_df['yr'].unique(), format_func=lambda x: "2011" if x == 0 else "2012")
+season_filter = st.sidebar.multiselect("Pilih Musim:", day_df['season'].unique(), format_func=lambda x: ["Spring", "Summer", "Fall", "Winter"][x-1])
 
-df_filtered = df.copy()
+df_filtered = day_df.copy()
 if year_filter:
     df_filtered = df_filtered[df_filtered['yr'].isin(year_filter)]
 if season_filter:
