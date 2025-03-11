@@ -2,10 +2,22 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
+import os
 
-df = pd.read_csv("main_data.csv")
 
-df['dteday'] = pd.to_datetime(df['dteday'])
+file_path = "main_data.csv"  
+
+if os.path.exists(file_path):
+    st.success(f"✅ File ditemukan: {file_path}")
+else:
+    st.error("❌ File tidak ditemukan! Pastikan file sudah diunggah ke GitHub dan berada di direktori yang benar.")
+
+# Jika file ditemukan, load data
+if os.path.exists(file_path):
+    df = pd.read_csv(file_path)
+    st.write(df.head())
+else:
+    st.stop()  # Hentikan Streamlit jika file tidak ditemukan
 
 
 st.sidebar.header("Filter Data")
