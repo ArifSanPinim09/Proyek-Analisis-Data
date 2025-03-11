@@ -4,32 +4,39 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
+# Dapatkan lokasi file dengan pendekatan yang lebih aman
+current_dir = os.path.dirname(os.path.abspath(__file__))  # Direktori tempat script ini berada
+file_path = os.path.join(current_dir, "dashboard", "main_data.csv")
 
-# Dapatkan lokasi absolut berdasarkan lokasi script
-file_path = os.path.join(os.getcwd(), "dashboard", "main_data.csv")
-
-if os.path.exists(file_path):
-    print(f"✅ File ditemukan: {file_path}")
+# Cek apakah file ada
+if not os.path.exists(file_path):
+    st.error("❌ File `main_data.csv` tidak ditemukan! Harap pastikan file berada di folder `dashboard`.")
+    uploaded_file = st.file_uploader("Atau unggah file CSV secara manual:", type=["csv"])
+    if uploaded_file is not None:
+        day_df = pd.read_csv(uploaded_file)
+        st.success("✅ File berhasil diunggah dan dimuat!")
+    else:
+        st.stop()  # Menghentikan eksekusi Streamlit jika file belum ada
 else:
-    print("❌ File tidak ditemukan!")
+    day_df = pd.read_csv(file_path)
+    st.success(f"✅ File ditemukan di {file_path}")
 
-day_df = pd.read_csv(file_path)
-
+# Konversi tanggal
 day_df['dteday'] = pd.to_datetime(day_df['dteday'])
 
-
-
+# Sidebar filter
 st.sidebar.header("Filter Data")
 year_filter = st.sidebar.multiselect("Pilih Tahun:", day_df['yr'].unique(), format_func=lambda x: "2011" if x == 0 else "2012")
 season_filter = st.sidebar.multiselect("Pilih Musim:", day_df['season'].unique(), format_func=lambda x: ["Spring", "Summer", "Fall", "Winter"][x-1])
 
+# Terapkan filter
 df_filtered = day_df.copy()
 if year_filter:
     df_filtered = df_filtered[df_filtered['yr'].isin(year_filter)]
 if season_filter:
     df_filtered = df_filtered[df_filtered['season'].isin(season_filter)]
 
-
+# Tampilan dashboard
 st.title("📊 Dashboard Penyewaan Sepeda")
 st.markdown("""
 **Analisis Penyewaan Sepeda Tahun 2011-2012**
