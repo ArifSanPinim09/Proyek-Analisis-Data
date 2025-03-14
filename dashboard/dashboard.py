@@ -4,23 +4,8 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 import os
 
-st.write("📂 Direktori saat ini:", os.getcwd())
-
-file_path = "main_data.csv"
-
-if os.path.exists(file_path):
-    st.success("✅ File ditemukan, memuat data...")
-    df = pd.read_csv(file_path)
-else:
-    st.warning("⚠️ File `main_data.csv` tidak ditemukan di server!")
-    
-    uploaded_file = st.file_uploader("📤 Upload file CSV", type=["csv"])
-    if uploaded_file is not None:
-        df = pd.read_csv(uploaded_file)
-        st.success("✅ File berhasil diunggah!")
-    else:
-        st.error("❌ File tidak tersedia! Harap unggah file CSV terlebih dahulu.")
-        st.stop() 
+file_path = os.path.join(os.path.dirname(__file__), "main_data.csv")
+df = pd.read_csv(file_path)
 
 
 df['dteday'] = pd.to_datetime(df['dteday'])
