@@ -1,1 +1,2 @@
-link dashboard : https://3jtgnqwg5yetkjuztn8kw2.streamlit.app/
+link dashboard : https://wrof3yjpbcvzzbstvxs8ks.streamlit.app/
+link github : https://github.com/ArifSanPinim09/Proyek-Analisis-Data
