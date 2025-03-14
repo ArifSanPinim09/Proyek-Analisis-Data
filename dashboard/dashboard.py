@@ -2,9 +2,15 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-
+import os
 # Load data
-df = pd.read_csv("main_data.csv")
+file_path = os.path.join(os.getcwd(), "main_data.csv")
+if not os.path.exists(file_path):
+    st.error(f"File tidak ditemukan: {file_path}")
+else:
+    df = pd.read_csv(file_path)
+    df['dteday'] = pd.to_datetime(df['dteday'])
+    
 df['dteday'] = pd.to_datetime(df['dteday'])
 
 df['day_type'] = df['workingday'].map({0: "Akhir Pekan", 1: "Hari Kerja"})
